@@ -35,6 +35,7 @@ public class UserPlugin implements IPlugin {
 
         VBox container = new VBox(8);
         container.setPadding(new Insets(10));
+        container.setStyle("-fx-border-width: 1; -fx-border-color: #A0C4FF;");
         Label title = new Label("Usuários");
         title.setMaxWidth(Double.MAX_VALUE);
         title.setAlignment(Pos.CENTER);

@@ -12,9 +12,29 @@
         <module>interfaces</module>
         <module>app</module>
         <module>plugins/myplugin</module>
-        <module>plugins/thigasplugin</module>
         <module>plugins/userplugin</module>
     </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.3.2</version> <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>${project.basedir}/plugins</directory>
+                                <includes>
+                                    <include>*.jar</include>
+                                </includes>
+                                <followSymlinks>false</followSymlinks>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
