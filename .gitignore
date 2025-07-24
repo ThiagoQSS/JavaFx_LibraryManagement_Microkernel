@@ -1,0 +1,31 @@
+# Arquivos de log
+*.log
+
+# Arquivos de build do Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Arquivos compilados do Java, para nao ir pra caixa de Spam do email
+*.class
+
+# Pacotes Java, plugins compilados e etc
+*.jar
+*.war
+*.ear
+
+# Arquivos de configurações de IDEs
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
