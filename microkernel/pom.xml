@@ -13,6 +13,7 @@
         <module>app</module>
         <module>plugins/myplugin</module>
         <module>plugins/userplugin</module>
+        <module>plugins/bookplugin</module>
     </modules>
 
     <build>

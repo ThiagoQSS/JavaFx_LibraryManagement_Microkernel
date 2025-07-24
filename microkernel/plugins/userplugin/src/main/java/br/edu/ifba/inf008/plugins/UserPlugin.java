@@ -1,20 +1,13 @@
 package br.edu.ifba.inf008.plugins;
 
-import br.edu.ifba.inf008.interfaces.IPlugin;
 import br.edu.ifba.inf008.interfaces.ICore;
+import br.edu.ifba.inf008.interfaces.IPlugin;
 import br.edu.ifba.inf008.interfaces.IUIController;
-
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.VBox;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.event.ActionEvent;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 public class UserPlugin implements IPlugin {
 
@@ -39,7 +32,7 @@ public class UserPlugin implements IPlugin {
         Label title = new Label("Usuários");
         title.setMaxWidth(Double.MAX_VALUE);
         title.setAlignment(Pos.CENTER);
-        title.setStyle("-fx-background-color: #A0C4FF;");
+        title.setStyle("-fx-background-color: #A0C4FF; -fx-font-size: 20px;");
 
         registerButton = new Button("Cadastrar");
         editButton = new Button("Editar");

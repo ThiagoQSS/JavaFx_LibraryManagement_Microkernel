@@ -1,27 +1,22 @@
 package br.edu.ifba.inf008.shell;
 
-import br.edu.ifba.inf008.interfaces.IUIController;
 import br.edu.ifba.inf008.interfaces.ICore;
-import br.edu.ifba.inf008.shell.PluginController;
-
+import br.edu.ifba.inf008.interfaces.IUIController;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.application.Platform;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.Tab;
-import javafx.geometry.Insets;
-import javafx.geometry.Side;
-import javafx.scene.Node;
 
 public class UIController extends Application implements IUIController
 {
@@ -29,6 +24,7 @@ public class UIController extends Application implements IUIController
     private static UIController uiController;
     private MenuBar menuBar;
     private TabPane tabPane;
+    
     // Novas variáveis para controlar os painéis
     private VBox navigationPane;
     private StackPane contentPane;
@@ -54,7 +50,7 @@ public class UIController extends Application implements IUIController
         //Menu bar no topo
         this.menuBar = new MenuBar();
         root.setTop(menuBar);
-        // Adiciona um menu "Arquivo > Sair" para funcionalidade básica
+        // 1. Adiciona um menu "Arquivo > Sair" para funcionalidade básica
         MenuItem exitItem = createMenuItem("Arquivo", "Sair");
         exitItem.setOnAction(e -> Platform.exit());
 
@@ -81,10 +77,13 @@ public class UIController extends Application implements IUIController
         // Define a coluna da esquerda com 20% da largura
         splitPane.setDividerPositions(0.20); 
 
-        // Coloca o SplitPane no centro do BorderPane
+        // 5. Coloca o SplitPane no centro do BorderPane
         root.setCenter(splitPane);
    
         Scene scene = new Scene(root, 1280, 720);
+
+        // 6. Carregar o CSS
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -92,6 +91,8 @@ public class UIController extends Application implements IUIController
         // 7. Inicia o carregamento dos plugins
         // No futuro, os plugins chamarão os métodos abaixo para preencher a UI
         Core.getInstance().getPluginController().init();
+
+
         // VBox vBox = new VBox(menuBar);
 
         // tabPane = new TabPane();
