@@ -12,6 +12,8 @@
         <module>interfaces</module>
         <module>app</module>
         <module>plugins/myplugin</module>
+        <module>plugins/thigasplugin</module>
+        <module>plugins/userplugin</module>
     </modules>
 
     <properties>
