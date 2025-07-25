@@ -35,4 +35,8 @@ public class User {
     public StringProperty nameProperty() { return name; }
     public StringProperty emailProperty() { return email; }
     public ObjectProperty<LocalDate> registrationDateProperty() { return registrationDate; }
+
+    // --- Setters para os valores ---
+    public void setName(String name) {this.name.set(name);}
+    public void setEmail(String email) {this.email.set(email);}
 }

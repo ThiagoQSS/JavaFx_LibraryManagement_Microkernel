@@ -3,6 +3,7 @@ package br.edu.ifba.inf008.plugins;
 import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.IPlugin;
 import br.edu.ifba.inf008.interfaces.IUIController;
+import br.edu.ifba.inf008.plugins.persistence.UserManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -25,6 +26,8 @@ public class UserPlugin implements IPlugin {
         System.out.println("======> UserPlugin.init() FOI CHAMADO! <======");
 
         uiController = ICore.getInstance().getUIController();
+
+        UserManager userManager = new UserManager();
 
         VBox container = new VBox(8);
         container.setPadding(new Insets(10));
@@ -52,9 +55,9 @@ public class UserPlugin implements IPlugin {
 
         container.getChildren().addAll(title, registerButton, editButton, listButton);
 
-        registerPage = new RegisterPage();
-        editPage = new EditPage();
-        listPage = new ListPage();
+        registerPage = new RegisterPage(userManager);
+        editPage = new EditPage(userManager);
+        listPage = new ListPage(userManager);
 
         setupActions();
 

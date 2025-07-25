@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserDAO {
 
@@ -52,6 +53,99 @@ public class UserDAO {
         return users;
     }
 
-    // No futuro, outros métodos como saveUser(User user), updateUser(User user),
-    // etc. virão aqui.
+    /**
+     * Salva um novo usuário no banco de dados.
+     * 
+     * @param user O objeto User a ser salvo (o ID pode ser qualquer valor, será
+     *             ignorado).
+     * @return O ID gerado pelo banco de dados para o novo usuário.
+     * @throws SQLException se ocorrer um erro durante a inserção.
+     */
+    public int saveUser(User user) throws SQLException {
+        // O comando SQL INSERT com placeholders (?) para os valores.
+        String sql = "INSERT INTO users (name, email, registered_at) VALUES (?, ?, ?)";
+        int generatedId = -1;
+
+        // Usamos try-with-resources para garantir que a conexão e o statement sejam
+        // fechados.
+        // Criamos o PreparedStatement, pedindo para retornar as chaves geradas (o ID).
+        try (Connection conn = ICore.getInstance().getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+
+            // 1. Substitui os placeholders (?) pelos dados do objeto User.
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+            // Para datas, setObject é uma forma robusta de passar o tipo correto.
+            pstmt.setObject(3, user.getRegistrationDate());
+
+            // 2. Executa o comando de inserção.
+            int affectedRows = pstmt.executeUpdate();
+
+            // 3. Verifica se a inserção funcionou.
+            if (affectedRows > 0) {
+                // 4. Recupera o ID gerado pelo banco.
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedId = generatedKeys.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao salvar usuário: " + e.getMessage());
+            // Relança a exceção para que a camada que chamou o método saiba do erro.
+            throw e;
+        }
+
+        return generatedId;
+    }
+
+    public Optional<User> getUserById(int userId) throws SQLException {
+        String sql = "SELECT name, email, registered_at FROM users WHERE user_id = ?";
+
+        // Usamos try-with-resources para garantir que a conexão e o statement sejam
+        // fechados.
+        // Criamos o PreparedStatement, pedindo para retornar as chaves geradas (o ID).
+        try (Connection conn = ICore.getInstance().getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                // Usando if pq só devemos receber um resultado por ID
+                if (rs.next()) {
+                    String name = rs.getString("name");
+                    String email = rs.getString("email");
+                    LocalDate registrationDate = rs.getTimestamp("registered_at").toLocalDateTime().toLocalDate();
+                    User user = new User(userId, name, email, registrationDate);
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao resgatar usuário: " + e.getMessage());
+        }
+        // Se o usuário não foi encontrado ou se ocorreu um erro, retorna um Optional
+        // vazio.
+        return Optional.empty();
+    }
+
+    public void updateUser(int id, String name, String email) throws SQLException {
+        String sql = "UPDATE users SET name = ?, email = ? WHERE user_id = ?";
+
+        try (Connection conn = ICore.getInstance().getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, email);
+            pstmt.setInt(3, id);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void deleteUser(int id) throws SQLException {
+        String sql = "DELETE FROM users WHERE user_id = ?";
+        try (Connection conn = ICore.getInstance().getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        }
+    }
 }

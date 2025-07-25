@@ -2,8 +2,10 @@ package br.edu.ifba.inf008.plugins;
 
 import br.edu.ifba.inf008.plugins.model.User;
 import br.edu.ifba.inf008.plugins.persistence.UserDAO;
+import br.edu.ifba.inf008.plugins.persistence.UserManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -26,11 +28,8 @@ import java.util.List;
 public class ListPage extends VBox {
 
     private TableView<User> userTable;
-    private ObservableList<User> userList;
-    private UserDAO userDAO;
 
-    public ListPage() {
-        this.userDAO = new UserDAO(); // inicializando o userDAO
+    public ListPage(UserManager userManager) {
         // 1. Configurações gerais do painel (VBox)
         this.setPadding(new Insets(20));
         this.setSpacing(10);
@@ -40,15 +39,18 @@ public class ListPage extends VBox {
         titleLabel.setFont(new Font("Arial", 22));
         titleLabel.setStyle("-fx-padding: 5px");
 
-        VBox searchContainer = createSearchContainer();
+        ObservableList<User> masterUserList = userManager.getUserList();
+        FilteredList<User> filteredUserList = new FilteredList<>(masterUserList, p -> true);
+
+        VBox searchContainer = createSearchContainer(filteredUserList);
         // 3. Configura a Tabela
-        setupTable();
+        setupTable(filteredUserList);
 
         // 4. Adiciona os componentes ao layout
         this.getChildren().addAll(titleLabel, searchContainer, userTable);
     }
 
-    private void setupTable() {
+    private void setupTable(FilteredList<User> listToDisplay) {
         // Cria a Tabela
         userTable = new TableView<>();
 
@@ -65,75 +67,52 @@ public class ListPage extends VBox {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("registrationDate"));
 
         // Adiciona as colunas à tabela
-        userTable.getColumns().add(idColumn);
-        userTable.getColumns().add(nameColumn);
-        userTable.getColumns().add(emailColumn);
-        userTable.getColumns().add(dateColumn);
-
-        // Ajusta a largura das colunas para preencher o espaço disponível
+        userTable.getColumns().addAll(idColumn, nameColumn, emailColumn, dateColumn);
         userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Popula a tabela com dados reais dessa vezz
-        loadDataFromDatabase();
+        userTable.setItems(listToDisplay);
     }
 
-    private void loadDataFromDatabase() {
-        // Busca a lista de usuários do banco
-        List<User> usersFromDb = userDAO.getAllUsers();
-        
-        // Converte a List normal para uma ObservableList do JavaFX
-        userList = FXCollections.observableArrayList(usersFromDb);
-        
-        // Define a lista de itens da tabela
-        userTable.setItems(userList);
-    }
-    
-    private VBox createSearchContainer() {
+    private VBox createSearchContainer(FilteredList<User> filteredList) {
+
         VBox searchContainer = new VBox(10);
         searchContainer.setPadding(new Insets(10, 0, 10, 0));
 
         // --- ID Search ---
-        HBox idSearchBox = new HBox(10);
-        TextField idSearchField = new TextField();
-        idSearchField.setPromptText("Buscar por ID");
-        Button idSearchButton = new Button("Buscar");
-        idSearchButton.setPrefWidth(100);
-        Button idCleanButton = new Button("Limpar");
-        idCleanButton.setPrefWidth(100);
-        HBox.setHgrow(idSearchField, Priority.ALWAYS);
-        idSearchBox.getChildren().addAll(idSearchField, idSearchButton, idCleanButton);
+        HBox SearchBox = new HBox(10);
+        TextField SearchField = new TextField();
+        SearchField.setPromptText("Buscar por ID, Nome, Email ou Data (AAAA-MM-DD)");
 
-        // --- Name Search ---
-        HBox nameSearchBox = new HBox(10);
-        TextField nameSearchField = new TextField();
-        nameSearchField.setPromptText("Buscar por Nome");
-        Button nameSearchButton = new Button("Buscar");
-        nameSearchButton.setPrefWidth(100);
-        Button nameCleanButton = new Button("Limpar");
-        nameCleanButton.setPrefWidth(100);
-        HBox.setHgrow(nameSearchField, Priority.ALWAYS);
-        nameSearchBox.getChildren().addAll(nameSearchField, nameSearchButton, nameCleanButton);
+        SearchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(user -> {
+                // Se o campo de busca estiver vazio, mostre todos os usuários.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                // Compara o texto de busca (em minúsculas) com os dados do usuário.
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (user.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filtra pelo nome
+                } else if (user.getEmail().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filtra pelo email
+                } else if (String.valueOf(user.getId()).contains(lowerCaseFilter)) {
+                    return true; // Filtra pelo ID
+                } else if (user.getRegistrationDate().toString().contains(lowerCaseFilter)) {
+                    return true; // Filtra pela data
+                }
+                return false; // Não encontrou correspondência
+            });
+        });
 
-        // --- Date Search ---
-        HBox dateSearchBox = new HBox(10);
-        TextField dateSearchField = new TextField();
-        dateSearchField.setPromptText("Buscar por Data (AAAA-MM-DD)");
-        Button dateSearchButton = new Button("Buscar");
-        dateSearchButton.setPrefWidth(100);
-        Button dateCleanButton = new Button("Limpar");
-        dateCleanButton.setPrefWidth(100);
-        HBox.setHgrow(dateSearchField, Priority.ALWAYS);
-        dateSearchBox.getChildren().addAll(dateSearchField, dateSearchButton, dateCleanButton);
+        Button CleanButton = new Button("Limpar");
+        CleanButton.setPrefWidth(100);
+        CleanButton.setOnAction(event -> SearchField.clear());
 
-        searchContainer.getChildren().addAll(idSearchBox, nameSearchBox, dateSearchBox);
+        SearchBox.getChildren().addAll(SearchField, CleanButton);
+        HBox.setHgrow(SearchField, Priority.ALWAYS);
+        searchContainer.getChildren().addAll(SearchBox);
 
         return searchContainer;
     }
 
-
-    // No futuro, teremos um método para adicionar usuários a partir de outras
-    // páginas
-    public void addUser(User user) {
-        userList.add(user);
-    }
 }
