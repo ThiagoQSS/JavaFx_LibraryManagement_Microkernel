@@ -27,8 +27,8 @@ public class BookManager {
     }
 
     private void loadUsersFromDatabase() {
-        List<Book> usersFromDb = this.bookDAO.getAllBooks();
-        this.bookList.setAll(usersFromDb); // Usa setAll para substituir o conteúdo da lista
+        List<Book> booksFromDb = this.bookDAO.getAllBooks();
+        this.bookList.setAll(booksFromDb); // Usa setAll para substituir o conteúdo da lista
     }
 
     /**
@@ -36,7 +36,7 @@ public class BookManager {
      * 
      * @return A ObservableList de usuários.
      */
-    public ObservableList<User> getBookList() {
+    public ObservableList<Book> getBookList() {
         return this.bookList;
     }
 
@@ -46,37 +46,40 @@ public class BookManager {
      * @param name  O nome do novo usuário.
      * @param email O email do novo usuário.
      */
-    public int saveNewUser(String name, String email) throws SQLException {
+    public int saveNewBook(String title, String author, String isbn, int publishedDate, int copiesAvailable) throws SQLException {
         // Cria o objeto User. O -1 no ID é um placeholder.
-        User newUser = new User(-1, name, email, LocalDate.now());
+        Book newBook = new Book(-1, title, author, isbn, copiesAvailable, publishedDate);
 
         // Salva no banco de dados e obtém o ID real gerado.
-        int generatedId = userDAO.saveUser(newUser);
+        int generatedId = bookDAO.saveBook(newBook);
 
         // Cria um objeto final com o ID correto e o adiciona à lista observável.
-        User persistedUser = new User(generatedId, name, email, newUser.getRegistrationDate());
-        this.bookList.add(persistedUser);
+        Book persistedBook = new Book(generatedId, title, author, isbn, copiesAvailable, publishedDate);
+        this.bookList.add(persistedBook);
 
         return generatedId;
     }
 
-    public Optional<User> getUserById(int id) throws SQLException {
-        return this.userDAO.getUserById(id);
+    public Optional<Book> getUserById(int id) throws SQLException {
+        return this.bookDAO.getBookById(id);
     }
 
-    public void updateUser(int id, String name, String email) throws SQLException {
-        this.userDAO.updateUser(id, name, email);
-        for (User user : bookList) {
-            if (user.getId() == id) {
-                user.setName(name);
-                user.setEmail(email);
+    public void updateBook(int id, String title, String author, String isbn, int publishedDate, int copiesAvailable) throws SQLException {
+        this.bookDAO.updateBook(id, title, author, isbn, publishedDate, copiesAvailable);
+        for (Book book : bookList) {
+            if (book.getId() == id) {
+                book.setTitle(title);
+                book.setAuthor(author);
+                book.setIsbn(isbn);
+                book.setCopiesAvailable(copiesAvailable);
+                book.setPublicationDate(publishedDate);
                 break;
             }
         }
     }
 
-    public void deleteUser(int id) throws SQLException {
-        this.userDAO.deleteUser(id);
-        this.bookList.removeIf(user -> user.getId() == id);
+    public void deleteBook(int id) throws SQLException {
+        this.bookDAO.deleteBook(id);
+        this.bookList.removeIf(book -> book.getId() == id);
     }
 }
