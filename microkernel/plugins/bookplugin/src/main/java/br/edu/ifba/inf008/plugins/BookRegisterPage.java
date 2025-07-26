@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
  * Representa a tela de UI para o gerenciamento de Usuários.
  * Contém os campos para entrada de dados e o botão de ação.
  */
-public class RegisterPage extends VBox {
+public class BookRegisterPage extends VBox {
 
     // Declara os componentes da UI como variáveis de instância
     // para que possam ser acessados por outros métodos.
@@ -25,10 +25,10 @@ public class RegisterPage extends VBox {
 
     private Button saveButton;
     private Label resultLabel;
-    private BookManager userManager;
+    private BookManager bookManager;
 
-    public RegisterPage(BookManager userManager) {
-        this.userManager = userManager;
+    public BookRegisterPage(BookManager bookManager) {
+        this.bookManager = bookManager;
         // 1. Configurações gerais do painel (VBox)
         this.setPadding(new Insets(20)); // Espaçamento interno
         this.setSpacing(10); // Espaçamento entre os componentes
@@ -38,13 +38,13 @@ public class RegisterPage extends VBox {
         title.setFont(new Font("Arial", 22));
 
         // 3. Cria os campos e seus rótulos
-        Label titleLabel = new Label("Nome:");
+        Label titleLabel = new Label("Titulo:");
         titleField = new TextField();
-        titleField.setPromptText("Digite o nome completo"); // Texto de ajuda
+        titleField.setPromptText("Digite o titulo completo"); // Texto de ajuda
 
-        Label emailLabel = new Label("Email:");
+        Label authorLabel = new Label("author:");
         authorField = new TextField();
-        authorField.setPromptText("exemplo@email.com");
+        authorField.setPromptText("Digite o author");
 
         Label isbnLabel = new Label("ISBN:");
         isbnField = new TextField();
@@ -67,7 +67,7 @@ public class RegisterPage extends VBox {
         this.getChildren().addAll(
                 title,
                 titleLabel, titleField,
-                emailLabel, authorField,
+                authorLabel, authorField,
                 isbnLabel, isbnField,
                 publishedYearLabel, publishedYearField,
                 copiesAvailableLabel, copiesAvailableField,
@@ -94,25 +94,25 @@ public class RegisterPage extends VBox {
             }
             // Aqui chamo a lógica de persistência no banco de dados
             try {
-                int newBookId = userManager.saveNewBook(title, author, isbn, publishedYear, copiesAvailable);
+                int newBookId = bookManager.saveNewBook(title, author, isbn, publishedYear, copiesAvailable);
 
-                resultLabel.setText("Usuário '" + title + ", de ID '" + newBookId + "' cadastrado com sucesso!");
+                resultLabel.setText("Livro '" + title + ", de ID '" + newBookId + "' cadastrado com sucesso!");
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Sucesso");
                 alert.setHeaderText(null);
-                alert.setContentText("Usuário '" + title + "' cadastrado com sucesso!");
+                alert.setContentText("Livro '" + title + "' cadastrado com sucesso!");
                 alert.showAndWait();
             } catch (Exception e) {
-                resultLabel.setText("Erro ao salvar o usuário: " + e.getMessage());
+                resultLabel.setText("Erro ao salvar o livro: " + e.getMessage());
 
-                System.err.println("Falha ao salvar usuário no banco de dados.");
+                System.err.println("Falha ao salvar livro no banco de dados.");
                 e.printStackTrace(); // Imprime o erro detalhado no console
 
-                // Mostra um alerta de erro para o usuário
+                // Mostra um alerta de erro para o livro
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erro de Banco de Dados");
-                alert.setHeaderText("Não foi possível salvar o usuário.");
+                alert.setHeaderText("Não foi possível salvar o livro.");
                 alert.setContentText("Ocorreu um erro ao se comunicar com o banco de dados.");
                 alert.showAndWait();
             }

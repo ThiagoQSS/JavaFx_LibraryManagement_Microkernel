@@ -3,8 +3,8 @@ package br.edu.ifba.inf008.plugins;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import br.edu.ifba.inf008.plugins.model.Book;
-import br.edu.ifba.inf008.plugins.persistence.BookManager;
+import br.edu.ifba.inf008.plugins.model.User;
+import br.edu.ifba.inf008.plugins.persistence.UserManager;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -17,7 +17,7 @@ import javafx.scene.text.Font;
  * Representa a tela de UI para o gerenciamento de Usuários.
  * Contém os campos para entrada de dados e o botão de ação.
  */
-public class EditPage extends VBox {
+public class UserEditPage extends VBox {
 
     // Declara os componentes da UI como variáveis de instância
     // para que possam ser acessados por outros métodos.
@@ -28,11 +28,11 @@ public class EditPage extends VBox {
     private Button saveButton;
     private Button deleteButton;
     private Label resultLabel;
-    private BookManager bookManager;
+    private UserManager userManager;
     private int idToSearch;
 
-    public EditPage(BookManager bookManager) {
-        this.bookManager = bookManager;
+    public UserEditPage(UserManager userManager) {
+        this.userManager = userManager;
         this.idToSearch = -1;
         // 1. Configurações gerais do painel (VBox)
         this.setPadding(new Insets(20)); // Espaçamento interno
@@ -104,13 +104,13 @@ public class EditPage extends VBox {
             try {
                 this.idToSearch = Integer.parseInt(idText);
 
-                Optional<Book> foundUserOptional = bookManager.getUserById(idToSearch);
+                Optional<User> foundUserOptional = userManager.getUserById(idToSearch);
                 foundUserOptional.ifPresentOrElse(
                         // Ação a ser executada SE o usuário for encontrado:
-                        book -> {
+                        user -> {
                             // Preenche os campos com os dados do usuário encontrado.
-                            nameField.setText(book.getTitle());
-                            emailField.setText(book.getEmail());
+                            nameField.setText(user.getName());
+                            emailField.setText(user.getEmail());
 
                             // Habilita os campos para edição.
                             nameField.setDisable(false);
@@ -150,7 +150,7 @@ public class EditPage extends VBox {
             }
 
             try {
-                bookManager.updateUser(idToSearch, name, email);
+                userManager.updateUser(idToSearch, name, email);
                 showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Usuário atualizado com sucesso!");
                 clearEditableFields();
             } catch (SQLException e) {
@@ -167,7 +167,7 @@ public class EditPage extends VBox {
         deleteButton.setOnAction(event -> {
             try {
 
-                bookManager.deleteUser(idToSearch);
+                userManager.deleteUser(idToSearch);
                 showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Usuário excluído com sucesso!");
                 clearEditableFields();
             } catch (SQLException e) {

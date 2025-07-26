@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -125,7 +124,7 @@ public class BookDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Erro ao resgatar usuário: " + e.getMessage());
+            System.err.println("Erro ao resgatar livro: " + e.getMessage());
         }
         // Se o book não foi encontrado ou se ocorreu um erro, retorna um Optional
         // vazio.
@@ -133,7 +132,7 @@ public class BookDAO {
     }
 
     public void updateBook(int id, String title, String author, String isbn, int publishedDate, int copiesAvailable) throws SQLException {
-        String sql = "UPDATE users SET title = ?, author = ?, isbn = ?, published_year = ?, copies_available = ? WHERE user_id = ?";
+        String sql = "UPDATE books SET title = ?, author = ?, isbn = ?, published_year = ?, copies_available = ? WHERE book_id = ?";
 
         try (Connection conn = ICore.getInstance().getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {

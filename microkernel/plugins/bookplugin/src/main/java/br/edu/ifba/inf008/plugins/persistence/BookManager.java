@@ -60,7 +60,7 @@ public class BookManager {
         return generatedId;
     }
 
-    public Optional<Book> getUserById(int id) throws SQLException {
+    public Optional<Book> getBookById(int id) throws SQLException {
         return this.bookDAO.getBookById(id);
     }
 

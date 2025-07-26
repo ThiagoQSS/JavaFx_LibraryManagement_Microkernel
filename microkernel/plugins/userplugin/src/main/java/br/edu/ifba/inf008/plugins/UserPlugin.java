@@ -12,9 +12,9 @@ import javafx.scene.layout.VBox;
 
 public class UserPlugin implements IPlugin {
 
-    private RegisterPage registerPage;
-    private EditPage editPage;
-    private ListPage listPage;
+    private UserRegisterPage registerPage;
+    private UserEditPage editPage;
+    private UserListPage listPage;
 
     Button registerButton;
     Button editButton;
@@ -55,9 +55,9 @@ public class UserPlugin implements IPlugin {
 
         container.getChildren().addAll(title, registerButton, editButton, listButton);
 
-        registerPage = new RegisterPage(userManager);
-        editPage = new EditPage(userManager);
-        listPage = new ListPage(userManager);
+        registerPage = new UserRegisterPage(userManager);
+        editPage = new UserEditPage(userManager);
+        listPage = new UserListPage(userManager);
 
         setupActions();
 

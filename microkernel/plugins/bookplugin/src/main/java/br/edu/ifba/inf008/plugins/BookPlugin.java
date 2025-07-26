@@ -15,9 +15,9 @@ import javafx.scene.layout.VBox;
 public class BookPlugin implements IPlugin
 {
 
-    private RegisterPage registerPage;
-    private EditPage editPage;
-    private ListPage listPage;
+    private BookRegisterPage registerPage;
+    private BookEditPage editPage;
+    private BookListPage listPage;
 
     private Button registerButton;
     private Button editButton;
@@ -58,9 +58,9 @@ public class BookPlugin implements IPlugin
 
         container.getChildren().addAll(title, registerButton, editButton, listButton);
 
-        registerPage = new RegisterPage(bookManager);
-        editPage = new EditPage(bookManager);
-        listPage = new ListPage(bookManager);
+        registerPage = new BookRegisterPage(bookManager);
+        editPage = new BookEditPage(bookManager);
+        listPage = new BookListPage(bookManager);
 
         setupActions();
 

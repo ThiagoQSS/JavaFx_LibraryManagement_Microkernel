@@ -1,13 +1,12 @@
 package br.edu.ifba.inf008.plugins;
 
-import br.edu.ifba.inf008.plugins.model.Book;
-import br.edu.ifba.inf008.plugins.persistence.BookDAO;
-import br.edu.ifba.inf008.plugins.persistence.BookManager;
-import javafx.collections.FXCollections;
+import java.time.LocalDate;
+
+import br.edu.ifba.inf008.plugins.model.User;
+import br.edu.ifba.inf008.plugins.persistence.UserManager;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -19,17 +18,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-import java.time.LocalDate;
-import java.util.List;
-
 /**
  * Representa a página que exibe uma lista de todos os usuários cadastrados.
  */
-public class ListPage extends VBox {
+public class UserListPage extends VBox {
 
-    private TableView<Book> userTable;
+    private TableView<User> userTable;
 
-    public ListPage(BookManager userManager) {
+    public UserListPage(UserManager userManager) {
         // 1. Configurações gerais do painel (VBox)
         this.setPadding(new Insets(20));
         this.setSpacing(10);
@@ -39,7 +35,7 @@ public class ListPage extends VBox {
         titleLabel.setFont(new Font("Arial", 22));
         titleLabel.setStyle("-fx-padding: 5px");
 
-        ObservableList<User> masterUserList = userManager.getBookList();
+        ObservableList<User> masterUserList = userManager.getUserList();
         FilteredList<User> filteredUserList = new FilteredList<>(masterUserList, p -> true);
 
         VBox searchContainer = createSearchContainer(filteredUserList);

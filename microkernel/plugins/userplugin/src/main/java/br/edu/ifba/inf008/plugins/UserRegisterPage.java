@@ -1,9 +1,5 @@
 package br.edu.ifba.inf008.plugins;
 
-import java.time.LocalDate;
-
-import br.edu.ifba.inf008.plugins.model.User;
-import br.edu.ifba.inf008.plugins.persistence.UserDAO;
 import br.edu.ifba.inf008.plugins.persistence.UserManager;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
@@ -17,7 +13,7 @@ import javafx.scene.text.Font;
  * Representa a tela de UI para o gerenciamento de Usuários.
  * Contém os campos para entrada de dados e o botão de ação.
  */
-public class RegisterPage extends VBox {
+public class UserRegisterPage extends VBox {
 
     // Declara os componentes da UI como variáveis de instância
     // para que possam ser acessados por outros métodos.
@@ -27,7 +23,7 @@ public class RegisterPage extends VBox {
     private Label resultLabel;
     private UserManager userManager;
 
-    public RegisterPage(UserManager userManager) {
+    public UserRegisterPage(UserManager userManager) {
         this.userManager = userManager;
         // 1. Configurações gerais do painel (VBox)
         this.setPadding(new Insets(20)); // Espaçamento interno
